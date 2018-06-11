@@ -1,0 +1,11 @@
+﻿body {
+    
+}
+.quizpanel {
+    background-color: lightgrey;
+    border: 5px solid green;
+    padding: 10px;
+    border-radius: 25px;
+}
+   
+
