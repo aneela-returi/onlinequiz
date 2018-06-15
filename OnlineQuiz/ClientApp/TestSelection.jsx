@@ -25,27 +25,20 @@ class TestSelection extends React.Component {
             <div className="container">
                 <form className="form-horizontal" role="form">
                     <fieldset>
-                        <p className='h3'>Select a test</p>
-                        <div className="radio">
-                            <label>
-                                <div className="col-md-4">
-                                    <input type='radio' name='optradio' value='csharp' checked={this.state.selectedTest == 'csharp'} onChange={this.handleChange} />CSharp
-                                 </div>
-                            </label>
-
-                        </div>
-                        <div className="radio">
-                            <label>
-                                <div className="col-md-4">
-                                    <input type='radio' name='optradio' value='html' checked={this.state.selectedTest == 'html'} onChange={this.handleChange} />HTML
-                                    </div>
+                        <p class='h3'>Select a test</p>
+                        <div className="form-check">
+                            <label className="form-check-label">
+                                    <input type='radio'class='form-check-input' name='optradio' value='csharp' checked={this.state.selectedTest == 'csharp'} onChange={this.handleChange} />CSharp 
                             </label>
                         </div>
-                        <div className="radio">
-                            <label>
-                                <div className="col-md-4">
-                                    <input type='radio' name='optradio' value='js' checked={this.state.selectedTest == 'js'} onChange={this.handleChange} />JavaScript
-                                </div>
+                        <div className="form-check">
+                            <label className="form-check-label">
+                                    <input type='radio'class='form-check-input' name='optradio' value='html' checked={this.state.selectedTest == 'html'} onChange={this.handleChange} />HTML
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <label className="form-check-label">
+                                    <input type='radio'class='form-check-input' name='optradio' value='js' checked={this.state.selectedTest == 'js'} onChange={this.handleChange} />JavaScript
                             </label>
                         </div>
                         <br />

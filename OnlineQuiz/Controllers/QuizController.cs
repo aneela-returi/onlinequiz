@@ -45,7 +45,7 @@ namespace OnlineQuiz.Controllers
             //also return a quiz end flag
             var isLastQuestion = (questionList.Count == currentQuestionIndex + 1);
 
-            return new JsonResult(new { Question = questionList[currentQuestionIndex], isLastQuestion });
+            return new JsonResult(new { QNo = currentQuestionIndex + 1, Question = questionList[currentQuestionIndex], isLastQuestion });
         }
 
         [HttpPost("result")]
