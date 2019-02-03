@@ -5,7 +5,7 @@ import axios from 'axios';
 export default class Quiz extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { quizId: -1, question: null, answer: -1, questionNum :0, isLastQuestion: false, endOfTest: false };
+        this.state = { quizId: -1, question: null, answer: -1, isLastQuestion: false, endOfTest: false };
         this.nextClick = this.nextClick.bind(this);
         this.handleAnswerOption = this.handleAnswerOption.bind(this);
         this.finishClick = this.finishClick.bind(this);
@@ -29,10 +29,11 @@ export default class Quiz extends React.Component {
             axios.post('/api/quiz/next', "quizNumber=" + this.state.quizId)
                 .then(nextResult => {
                     console.log(nextResult.data.question);
-                    this.state.question = nextResult.data.question;
-                    this.state.isLastQuestion = nextResult.data.isLastQuestion;
-                    this.state.questionNum = nextResult.data.qNo;
-                    this.setState(this.state);
+                    this.setState({
+                        question: nextResult.data.question,
+                        isLastQuestion: nextResult.data.isLastQuestion,
+                        questionNum: nextResult.data.qNo
+                    });
                 })
                 .catch(err => { console.log(err); });
         }
@@ -46,7 +47,7 @@ export default class Quiz extends React.Component {
                 console.log(answerResult.data);
 
                 //clear answer
-                this.state.answer = -1;
+                this.setState({ answer: -1 });
                 //this.state.endOfTest = this.state.isLastQuestion;
                 this.loadNextQuestion();
             })
@@ -54,43 +55,53 @@ export default class Quiz extends React.Component {
     }
 
     handleAnswerOption(e) {
-        this.state.answer = e.target.value;
-        this.setState(this.state);
+        this.setState({ answer: e.target.value });
     }
 
     finishClick(e) {
         var q = this.state.question;
-        this.state.endOfTest = true;
+        this.setState({ endOfTest: true });
         axios.post('/api/quiz/answer', { quizId: this.state.quizId, questionId: q.questionId, answer: this.state.answer })
             .then(answerResult => {
                 console.log(answerResult.data);
 
                 //clear answer
-                this.state.answer = -1;
+                this.setState({ answer: -1 });
                 this.getResults();
             })
             .catch(err => { console.log(err); });
     }
 
+
     getResults() {
         axios.post('/api/quiz/result', "quizNumber=" + this.state.quizId)
             .then(results => {
                 console.log(results.data);
-                this.state['results'] = results.data;
-                this.setState(this.state);
+                this.setState({ results: results.data });
             })
             .catch(err => { console.log(err); });
     }
+    //reviewClick(e) {
+    //    var q = this.state.question;
+    //    this.state.endOfTest = true;
+    //    axios.post('/api/quiz/review', "quizNumber=" + this.state.quizId)
+    //        .then(review => {
+    //            console.log(review.data);
+    //            this.state['review'] = review.data;
+    //            this.setState(this.state);
+    //        })
+    //        .catch(err => { console.log(err); });
+    //}
 
     render() {
         var options = '';
         var question = '';
         var handleAnswer = this.handleAnswerOption;
-        if (this.state.question != null && this.state.question != undefined) {
+        if (this.state.question !== null && this.state.question !== undefined) {
             question = this.state.question.question;
             options = this.state.question.options.map(
                 (o, index) =>
-                    <div class='radio'>
+                    <div className='radio'>
                         <label>
                             <input type='radio' name='answer' value={index} checked={this.state.answer == index} onChange={handleAnswer} />{o}
                         </label>
@@ -99,28 +110,39 @@ export default class Quiz extends React.Component {
         }
         var results = '';
         var hideFinishBtn = !this.state.isLastQuestion;
+        var questionsReview = '';
+        var optionsReview = '';
         if (this.state.results) {
             hideFinishBtn = true;
-            results = 'Total Questions: ' + this.state.results.totalQuestions + ', Correct Answers: ' + this.state.results.correctAnswers;
+            results = 'Total Questions: ' + this.state.results.totalQuestions + ', Correct Answers: ' + this.state.results.numberOfCorrectAnswers;
+            questionsReview = this.state.results.questionResults.map(
+                (q, index) => <div>
+                    <label> {q.question} </label>
+                </div>
+            );
+
+
         }
 
         return (
             <div>
                 <form className="form-horizontal">
-                    {!this.state.endOfTest ? (
+                    {!this.state.endOfTest ?
                         <div>
                             {this.state.questionNum}. {question}
                             <div>
                                 {options}
                             </div>
-                        </div>) : ''}
-                    <br />
-                    <div className='col-md-4'>
-                        {!this.state.isLastQuestion && <input type='button' onClick={this.nextClick} class="btn btn-default" value="Next" />}
-                        {!hideFinishBtn && <input type='button' onClick={this.finishClick} class="btn btn-default" value="Finish" />}
+                        </div> : ''}
+                    <div>
+                        <input type='button' hidden={this.state.isLastQuestion} onClick={this.nextClick} className="btn-primary" value="Next" />
+                        <input type='button' hidden={hideFinishBtn} onClick={this.finishClick} className="btn-primary" value="Finish" />
                     </div>
                     <div>
                         {results}
+                    </div>
+                    <div>
+                        {questionsReview}
                     </div>
                 </form>
             </div>

@@ -15,7 +15,10 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\bundle.js" />
   </ItemGroup>
 
 </Project>

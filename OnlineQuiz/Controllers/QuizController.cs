@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using OnlineQuiz.Data;
+using OnlineQuiz.Models;
 
 namespace OnlineQuiz.Controllers
 {
@@ -19,6 +20,7 @@ namespace OnlineQuiz.Controllers
         public IActionResult StartQuiz(string exam)
         {
             // create a new test id
+
             quizNumber++;
             // store the test id and the test type
             quizList.Add(quizNumber, exam);
@@ -51,19 +53,36 @@ namespace OnlineQuiz.Controllers
         [HttpPost("result")]
         public IActionResult GetResult(int quizNumber)
         {
+            var quizResult = new QuizResult
+            {
+                QuestionResults = new List<QuizResult.QuestionResult>()
+            };
+
             var numberOfCorrectAnswers = 0;
             var userAnswers = userAnswerList.Where(ua => ua.QuizId == quizNumber);
+            var questionList = QuizData.QuestionList.Where(q => userAnswers.Select(ua => ua.QuestionId).Contains(q.QuestionId));
 
             foreach (var answer in userAnswers)
             {
+                var questionDetails = QuizData.QuestionList.SingleOrDefault(q => q.QuestionId == answer.QuestionId);
                 var correctAnswer = QuizData.CorrectAnswers.SingleOrDefault(c => c.QuestionId == answer.QuestionId);
+                quizResult.QuestionResults.Add(new QuizResult.QuestionResult() { Question = questionDetails.Question, Options = questionDetails.Options, UserAnswer = answer.Answer, CorrectAnswer = correctAnswer.CorrectAnswer });
                 if (correctAnswer.CorrectAnswer == answer.Answer)
                 {
                     numberOfCorrectAnswers++;
                 }
             }
+           
+            quizResult.TotalQuestions = userAnswers.Count();
 
-            return new JsonResult(new { TotalQuestions = userAnswers.Count(), CorrectAnswers = numberOfCorrectAnswers });
+            quizResult.NumberOfCorrectAnswers = numberOfCorrectAnswers;
+            
+            return new JsonResult(quizResult);
         }
+
     }
 }
+
+
+
+
