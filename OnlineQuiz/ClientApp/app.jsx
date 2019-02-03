@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Testselection from './testselection';
+import Testselection from './TestSelection';
 import Quiz from './quiz';
 
 const Q = function ({ match }) {
