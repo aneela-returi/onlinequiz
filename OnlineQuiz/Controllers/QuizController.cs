@@ -66,7 +66,7 @@ namespace OnlineQuiz.Controllers
             {
                 var questionDetails = QuizData.QuestionList.SingleOrDefault(q => q.QuestionId == answer.QuestionId);
                 var correctAnswer = QuizData.CorrectAnswers.SingleOrDefault(c => c.QuestionId == answer.QuestionId);
-                quizResult.QuestionResults.Add(new QuizResult.QuestionResult() { Question = questionDetails.Question, Options = questionDetails.Options, UserAnswer = answer.Answer, CorrectAnswer = correctAnswer.CorrectAnswer });
+                quizResult.QuestionResults.Add(new QuizResult.QuestionResult() { Question = questionDetails.QuestionText, Options = questionDetails.Options, UserAnswer = answer.Answer, CorrectAnswer = correctAnswer.CorrectAnswer });
                 if (correctAnswer.CorrectAnswer == answer.Answer)
                 {
                     numberOfCorrectAnswers++;

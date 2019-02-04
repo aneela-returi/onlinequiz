@@ -93,7 +93,7 @@ namespace OnlineQuiz.Data
         {
             QuestionId = Guid.NewGuid();
 
-            Question = question;
+            QuestionText = question;
 
             ExamType = examType;
 
@@ -102,7 +102,7 @@ namespace OnlineQuiz.Data
 
         public Exam ExamType { get; private set; }
 
-        public string Question { get; private set; }
+        public string QuestionText { get; private set; }
 
         public string[] Options { get; private set; }
     }

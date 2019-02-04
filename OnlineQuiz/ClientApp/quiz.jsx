@@ -1,13 +1,13 @@
 ﻿import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import QuestionAndOptions from './QuestionAndOptions';
 
 export default class Quiz extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { quizId: -1, question: null, answer: -1, isLastQuestion: false, endOfTest: false };
+        this.state = { quizId: -1, isLastQuestion: false, endOfTest: false };
         this.nextClick = this.nextClick.bind(this);
-        this.handleAnswerOption = this.handleAnswerOption.bind(this);
         this.finishClick = this.finishClick.bind(this);
         this.getResults = this.getResults.bind(this);
     }
@@ -54,10 +54,6 @@ export default class Quiz extends React.Component {
             .catch(err => { console.log(err); });
     }
 
-    handleAnswerOption(e) {
-        this.setState({ answer: e.target.value });
-    }
-
     finishClick(e) {
         var q = this.state.question;
         this.setState({ endOfTest: true });
@@ -94,20 +90,7 @@ export default class Quiz extends React.Component {
     //}
 
     render() {
-        var options = '';
-        var question = '';
-        var handleAnswer = this.handleAnswerOption;
-        if (this.state.question !== null && this.state.question !== undefined) {
-            question = this.state.question.question;
-            options = this.state.question.options.map(
-                (o, index) =>
-                    <div className='radio'>
-                        <label>
-                            <input type='radio' name='answer' value={index} checked={this.state.answer == index} onChange={handleAnswer} />{o}
-                        </label>
-                    </div>
-            );
-        }
+       
         var results = '';
         var hideFinishBtn = !this.state.isLastQuestion;
         var questionsReview = '';
@@ -115,13 +98,6 @@ export default class Quiz extends React.Component {
         if (this.state.results) {
             hideFinishBtn = true;
             results = 'Total Questions: ' + this.state.results.totalQuestions + ', Correct Answers: ' + this.state.results.numberOfCorrectAnswers;
-            questionsReview = this.state.results.questionResults.map(
-                (q, index) => <div>
-                    <label> {q.question} </label>
-                </div>
-            );
-
-
         }
 
         return (
@@ -129,12 +105,9 @@ export default class Quiz extends React.Component {
                 <form className="form-horizontal">
                     {!this.state.endOfTest ?
                         <div>
-                            {this.state.questionNum}. {question}
-                            <div>
-                                {options}
-                            </div>
+                            <QuestionAndOptions questionNum={this.state.questionNum} question={this.state.question}/>
                         </div> : ''}
-                    <div>
+                    <div> 
                         <input type='button' hidden={this.state.isLastQuestion} onClick={this.nextClick} className="btn-primary" value="Next" />
                         <input type='button' hidden={hideFinishBtn} onClick={this.finishClick} className="btn-primary" value="Finish" />
                     </div>
